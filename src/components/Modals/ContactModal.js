@@ -1,7 +1,36 @@
-import React from 'react'
+import { useRef } from "react";
+import { Modal, Form, Button } from "react-bootstrap";
+import { useContacts } from "../../context/ContactsProvider";
 
-export default function ContactModal() {
+export default function ConversationModal({ closeModal }) {
+  const idRef = useRef();
+  const nameRef = useRef();
+  const { createContact } = useContacts();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createContact(idRef.current.value, nameRef.current.value);
+    closeModal();
+  };
+
   return (
-    <div>ContactModal</div>
-  )
+    <>
+      <Modal.Header closeButton>Create contact</Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group>
+            <Form.Label>Id</Form.Label>
+            <Form.Control type="text" ref={idRef} required></Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" ref={nameRef} required></Form.Control>
+          </Form.Group>
+          <Button type="submit" className="mt-3">
+            Create
+          </Button>
+        </Form>
+      </Modal.Body>
+    </>
+  );
 }

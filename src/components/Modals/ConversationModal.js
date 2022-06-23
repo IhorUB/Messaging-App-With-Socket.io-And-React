@@ -27,7 +27,6 @@ export default function ConversationModal({ closeModal }) {
           </Button>
         </Form>
       </Modal.Body>
-      <Modal.Footer>Footer</Modal.Footer>
     </>
   );
 }
