@@ -1,12 +1,28 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
+import { useContacts } from "../../context/ContactsProvider";
+import { useConversations } from "../../context/ConversionsProvider";
 
 export default function ConversationModal({ closeModal }) {
-  const idRef = useRef();
-  const nameRef = useRef();
+  const [selectedContactIds, setSelectedContactIds] = useState([]);
+  const { contacts } = useContacts();
+  const { createConversation } = useConversations();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    createConversation(selectedContactIds);
     closeModal();
+  };
+
+  const handleCheckboxChange = (contactId) => {
+    setSelectedContactIds((prevSelectedContactIds) => {
+      if (prevSelectedContactIds.includes(contactId)) {
+        return prevSelectedContactIds.filter((selectedId) => {
+          return selectedId !== contactId;
+        });
+      }
+      return [...prevSelectedContactIds, contactId];
+    });
   };
 
   return (
@@ -14,14 +30,16 @@ export default function ConversationModal({ closeModal }) {
       <Modal.Header closeButton>Create conversations</Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group>
-            <Form.Label>Id</Form.Label>
-            <Form.Control type="text" ref={idRef} required></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" ref={nameRef} required></Form.Control>
-          </Form.Group>
+          {contacts.map((contact) => (
+            <Form.Group key={contact.id} id={contact.id}>
+              <Form.Check
+                type="checkbox"
+                label={contact.name}
+                value={selectedContactIds.includes(contact.id)}
+                onChange={() => handleCheckboxChange(contact.id)}
+              ></Form.Check>
+            </Form.Group>
+          ))}
           <Button type="submit" className="mt-3">
             Create
           </Button>

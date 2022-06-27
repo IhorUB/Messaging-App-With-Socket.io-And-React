@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import ContactsProvider from "./context/ContactsProvider";
+import ConversationsProvider from "./context/ConversionsProvider";
 
 function App() {
   const [id, setId] = useLocalStorage("id");
@@ -11,7 +12,9 @@ function App() {
     <div className="App">
       {id ? (
         <ContactsProvider>
-          <Dashboard id={id} />
+          <ConversationsProvider>
+            <Dashboard id={id} />
+          </ConversationsProvider>
         </ContactsProvider>
       ) : (
         <Login onIdSubmit={setId} />
